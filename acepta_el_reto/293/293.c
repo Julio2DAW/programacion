@@ -2,13 +2,12 @@
 
 	//Variables.
 	int numCasos,
-		insectos,
-		aracnidos,
-		crustaceos,
+		insectos, //6 patas
+		aracnidos, //8 patas
+		crustaceos, //10 patas
 		escolpendra,
-		anillos_escolopendra,
-		resultado,
-		i;
+		anillos_escolopendra, //2 patas x anillo
+		resultado;
 		
 	main(){
 		
@@ -16,10 +15,10 @@
 		printf("Introduce numero de casos: ");
 		scanf("%d", &numCasos);
 		
-		for(i>0; i=numCasos; i++) {
+		for(; numCasos>0; numCasos--) {
 			
 			//Pido por teclado el número de insectos.
-			printf("Introduce numero de insectos: ");
+			printf("\n\nIntroduce numero de insectos: ");
 			scanf("%d", &insectos);
 			//Pido por teclado el número de aracnidos.
 			printf("Introduce numero de aracnidos: ");
@@ -34,8 +33,11 @@
 			printf("Introduce numero de anillos de escolopendras: ");
 			scanf("%d", &anillos_escolopendra);
 			
-			resultado = insectos*6;
+			//Variable para guardar el resultado
+			resultado = (insectos*6)+(aracnidos*8)+(crustaceos*10)+(escolpendra*anillos_escolopendra*2);
+			//Imprimo por pantalla el resultado
 			printf("Este es el numero de patas en total: %d", resultado);
-			return resultado;
 		}
+		
+		return 0;
 	}
