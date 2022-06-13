@@ -1,0 +1,162 @@
+Archivo de la configuración
+
+    define("USERNAME","julio_minijuegos");
+    define("PASSWORD","1234");
+    define("HOSTNAME","localhost");
+    define("DATABASE","Minijuegos");
+
+Conectar modelo con configuración de db
+
+    public $conexion;
+
+    function __construct(){
+
+        require_once 'config_db.php';
+        $this->conexion = new mysqli(HOSTNAME, USERNAME, PASSWORD, DATABASE);
+    }
+
+    $this->conexion->query($sql);
+
+Conectar controlador con modelo
+
+    public $modelo;
+
+    function __construct(){
+    
+        require_once 'modelo.php';
+        $this->modelo = new Modelo();
+    }
+
+    $this->modelo->altaMinijuegos();
+
+    if (empty($_POST['icono'])) {
+
+        $icono = 'NULL';
+        o
+        retun "Mensaje";
+    }else {
+
+        $icono="'".$_POST['icono']."'";
+    }
+    
+    Función para mostrar los minijuegos seleccionados con checkbox.
+
+        function minijuegosCheck(){
+
+            //Array para los minijuegos seleccionados.
+            $id = [];
+            $resultado = [];
+
+            //Meto los minijuegos en el array.
+            foreach($_POST as $nombre => $valor) {
+
+                $id[] = $valor;
+            }
+
+            //Recorro el array de los minijuegos y los muestro
+            foreach($id as $valor) {
+
+                $resultado[] = $this->modelo->consultarMinijuego($valor);
+            }
+
+            return $resultado;
+        }
+
+        $resultado = $controlador->minijuegosCheck();
+
+        foreach($resultado as $valor) {
+
+            while($registro=$valor->fetch_array()) {
+
+                echo "<p>".$registro['nombre']." ".$registro['icono']." ".$registro['ruta']."</p>";
+            }
+        }
+
+    Función para ver un minijuego en concreto
+
+        function verMinijuego(){
+
+            if(isset($_GET['id'])) {
+
+                $id = $_GET['id'];
+                return $this->modelo->consultarMinijuego($id);
+            }else {
+
+                return 'Ha sucedido un problema';
+            }
+        }
+
+         echo   "<p>"
+                    .$registro['nombre']." ".$registro['icono']." ".$registro['ruta'].
+                    "[ <a href='borrar.php?id=".$registro['id']."'>Borrar</a> ||
+                    <a href='modificar.php?id=".$registro['id']."'>Modificar</a> ]
+                </p>";
+
+    Mostrar el seleccionado con un select
+
+        $resultado = $controlador->minijuegosSelect($_POST['select']);
+        
+        while ($registro=$resultado->fetch_array()) {
+            
+            echo    "<p>"
+                        .$registro['nombre']." ".$registro['icono']." ".$registro['ruta'].
+                    "</p>";
+        } 
+
+Consultas
+
+    Insertar
+        
+        INSERT INTO minijuego (nombre, icono, ruta) VALUES ($nombre, $icono, $ruta)
+    
+    Seleccionar
+
+        SELECT * FROM minijuego WHERE id=$id
+
+    Borrar
+
+        DELETE FROM minijuego WHERE id=$id
+
+    Modificar
+
+        UPDATE minijuego SET nombre=$nombre,icono=$icono,ruta=$ruta WHERE id=$id
+
+    INNER JOIN
+
+        SELECT *
+            FROM ((palabras_ejer
+            INNER JOIN palabras ON palabras_ejer.id_palabra = palabras.id_palabra)
+            INNER JOIN prac_ejer ON palabras_ejer.id_prac_ejer = prac_ejer.id_prac_ejer)
+            WHERE (prac_ejer.usuario = 2 and prac_ejer.id_prac_ejer = $id)
+
+    Group By and Having
+
+        count, avg, sum, max, min
+
+        SELECT count(productos.id), usuarios.nombre
+            FROM productos 
+            LEFT JOIN user ON usuarios.id = productos.id_usuario
+                GROUP BY productos.id_usuario
+                HAVING count(productos.id) >= 2
+
+    Crear Check, Default, Clave principal compuesta
+
+        CREATE TABLE Prac_Ejer(
+
+            id_prac_ejer int unsigned NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            fecha_hora datetime NOT NULL DEFAULT NOW(), //Por defecto
+            numIntentos tinyint unsigned DEFAULT 0,
+            superado bit NOT NULL DEFAULT 0 CHECK (superado IN (0, 1)), //Check (El default va antes que el check)
+            usuario smallint unsigned NOT NULL,
+            CONSTRAINT FK_Usuario FOREIGN KEY (usuario) REFERENCES Usuarios (id_usuario) //Clave foránea
+        );
+
+        CREATE TABLE Palabras_Ejer(
+
+            id_palabra smallint unsigned,
+            id_prac_ejer int unsigned,
+            fallada bit NOT NULL CHECK (fallada IN (0, 1)),
+            PRIMARY KEY (id_palabra, id_prac_ejer), //Clave principal compuesta
+            CONSTRAINT FK_Palabra FOREIGN KEY (id_palabra) REFERENCES Palabras (id_palabra),
+            CONSTRAINT FK_Prac_Ejer FOREIGN KEY (id_prac_ejer) REFERENCES Prac_Ejer (id_prac_ejer)
+        )
